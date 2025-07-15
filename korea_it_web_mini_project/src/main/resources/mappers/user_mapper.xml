@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.BoardStudy.mapper.UserMapper">
+    <resultMap id="RoleResultMap" type="com.korit.BoardStudy.entity.Role">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleNameKor" column="role_name_kor"/>
+    </resultMap>
+
+    <resultMap id="UserRoleResultMap" type="com.korit.BoardStudy.entity.UserRole">
+        <id property="userRoleId" column="user_role_id" />
+        <result property="userId" column="urt_user_id" />
+        <result property="roleId" column="urt_role_id" />
+        <result property="createDt" column="urt_create_dt" />
+        <result property="updateDt" column="urt_update_dt" />
+        <association property="role" resultMap="RoleResultMap" />
+    </resultMap>
+
+    <resultMap id="UserResultMap" type="com.korit.BoardStudy.entity.User">
+        <id property="userId" column="user_id" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="email" column="email" />
+        <result property="createDt" column="create_dt" />
+        <result property="updateDt" column="update_dt" />
+        <collection property="userRoles" resultMap="UserRoleResultMap" />
+    </resultMap>
+
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into
+            user_tb(user_id, username, password, email, create_dt, update_dt)
+        values(0, #{username}, #{password}, #{email}, now(), null)
+    </insert>
+
+
+    <select id="getUserByUserId" resultMap="UserResultMap">
+        select
+            ut.user_id,
+            ut.username,
+            ut.password,
+            ut.email,
+            ut.create_dt,
+            ut.update_dt,
+
+            urt.user_role_id,
+            urt.user_id AS urt_user_id,
+            urt.role_id As urt_role_id,
+            urt.create_dt AS urt_create_dt,
+            urt.update_dt AS urt_update_dt,
+
+            rt.role_id,
+            rt.role_name,
+            rt.role_name_kor
+        from
+            user_tb ut
+            left join user_role_tb urt on (urt.user_id = ut.user_id)
+            left join role_tb rt on (rt.role_id = urt.role_id)
+        where
+            ut.user_id = #{userId}
+
+    </select>
+
+    <select id="getUserByUserName" resultMap="UserResultMap">
+        select
+        ut.user_id,
+        ut.username,
+        ut.password,
+        ut.email,
+        ut.create_dt,
+        ut.update_dt,
+
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id As urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
+
+        rt.role_id,
+        rt.role_name,
+        rt.role_name_kor
+        from
+        user_tb ut
+        left join user_role_tb urt on (urt.user_id = ut.user_id)
+        left join role_tb rt on (rt.role_id = urt.role_id)
+        where
+        ut.username = #{username}
+
+    </select>
+
+    <select id="getUserByUserEmail" resultMap="UserResultMap">
+        select
+        ut.user_id,
+        ut.username,
+        ut.password,
+        ut.email,
+        ut.create_dt,
+        ut.update_dt,
+
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id As urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
+
+        rt.role_id,
+        rt.role_name,
+        rt.role_name_kor
+        from
+        user_tb ut
+        left join user_role_tb urt on (urt.user_id = ut.user_id)
+        left join role_tb rt on (rt.role_id = urt.role_id)
+        where
+        ut.email = #{email}
+
+    </select>
+
+    <update id="updatePassword">
+        update
+            user_tb
+        set
+            password = #{password},
+            update_dt = now()
+        where
+            user_id = #{userId}
+    </update>
+
+
+</mapper>

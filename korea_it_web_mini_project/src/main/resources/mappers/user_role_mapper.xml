@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.BoardStudy.mapper.UserRoleMapper">
+    <resultMap id="RoleResultMap" type="com.korit.BoardStudy.entity.Role">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleNameKor" column="role_name_kor"/>
+    </resultMap>
+
+    <resultMap id="UserRoleResultMap" type="com.korit.BoardStudy.entity.UserRole">
+        <id property="userRoleId" column="user_role_id" />
+        <result property="userId" column="user_id" />
+        <result property="roleId" column="urt_role_id" />
+        <result property="createDt" column="create_dt" />
+        <result property="updateDt" column="update_dt" />
+        <association property="role" resultMap="RoleResultMap" />
+    </resultMap>
+
+
+
+    <insert id="addUserRole" useGeneratedKeys="true" keyProperty="userId">
+        insert into
+        user_role_tb
+        values (0, #{userId}, #{roleId}, now(), null)
+    </insert>
+
+    <select id="getUserRoleByUserIdAndRoleId" resultMap="UserRoleResultMap">
+        select
+            urt.user_role_id,
+            urt.user_id,
+            urt.role_id AS urt_role_id,
+            urt.create_dt,
+            urt.update_dt,
+
+            rt.role_id,
+            rt.role_name,
+            rt.role_name_kor
+        from
+            user_role_tb urt
+            left join role_tb rt on (urt.role_id = rt.role_id)
+        where
+            urt.user_id = #{userId} and
+            urt.role_id = #{roleId}
+    </select>
+
+    <update id="updateRoleId">
+        update
+            user_role_tb
+        set
+            role_id = 2,
+            update_dt = now()
+        where
+            user_role_id = #{userRoleId} and
+            user_id = #{userId}
+
+    </update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

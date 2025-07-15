@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.BoardStudy.mapper.OAuth2UserMapper">
+
+    <select id="getOAuth2UserByProviderAndProviderUserId">
+        select
+            *
+        from
+            oauth2_user_tb
+        where
+            provider = #{provider}
+            and provider_user_id = #{providerUserId}
+
+    </select>
+
+    <insert id="addOAuth2User">
+        insert into
+            oauth2_user_tb
+        values
+            (0, #{userId}, #{provider}, #{providerUserId}, now(), null)
+    </insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>
